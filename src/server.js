@@ -22,19 +22,16 @@ const Task = model("Task", taskSchema);
 const findTasks = async (req, res) => {
   const tasks = await Task.find({});
   res.send(tasks);
-  // next();
 };
 
 const findSingleTask = async (req, res) => {
   const tasks = await Task.findOne({ _id: req.params.id });
   res.send(tasks);
-  // next();
 };
 
 const addTask = async (req, res) => {
   const task = await Task.create(req.body);
   res.send(task);
-  // next();
 };
 
 const updateTask = async (req, res) => {
@@ -44,13 +41,20 @@ const updateTask = async (req, res) => {
     { upsert: true }
   );
   res.send(task);
-  // next();
+};
+
+const markCompleteTask = async (req, res) => {
+  const task = await Task.updateOne(
+    { _id: req.params.id },
+    { $set: { status: "completed" } },
+    { upsert: true }
+  );
+  res.send(task);
 };
 
 const deleteTask = async (req, res) => {
   const task = await Task.deleteOne({ _id: req.params.id });
   res.send(task);
-  // next();
 };
 
 const routes = Router();
@@ -61,6 +65,7 @@ routes.get("/tasks", findTasks);
 routes.get("/task/:id", findSingleTask);
 routes.post("/add-task", addTask);
 routes.put("/update-task/:id", updateTask);
+routes.put("/mark-complete/:id", markCompleteTask);
 routes.delete("/delete-task/:id", deleteTask);
 
 async function main() {
